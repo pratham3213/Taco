@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 
 const app = express();
 const port = 3000;
-var data={};
+let data;
 
 //Step 1: Run the solution.js file without looking at the code.
 //Step 2: You can go to the recipe.json file to see the full structure of the recipeJSON below.
@@ -14,49 +14,30 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  res.render("index.ejs", {recipe:data});
 });
 
 app.post("/recipe", (req, res) => {
-  if (req.body['choice']=='chicken'){
-    data={
-      dishName:JSON.parse(recipeJSON)[0].name,
-      protein:JSON.parse(recipeJSON)[0].ingredients.protein.name +', '+ JSON.parse(recipeJSON)[0].ingredients.protein.preparation,
-      salsa:JSON.parse(recipeJSON)[0].ingredients.salsa.name,
-      top0:JSON.parse(recipeJSON)[0].ingredients.toppings[0].quantity +' of '+ JSON.parse(recipeJSON)[0].ingredients.toppings[0].name,
-      top1:JSON.parse(recipeJSON)[0].ingredients.toppings[1].quantity +' of '+ JSON.parse(recipeJSON)[0].ingredients.toppings[1].name,
-      top2:JSON.parse(recipeJSON)[0].ingredients.toppings[2].quantity +' of '+ JSON.parse(recipeJSON)[0].ingredients.toppings[2].name,
-      top3:JSON.parse(recipeJSON)[0].ingredients.toppings[3].quantity +' of '+ JSON.parse(recipeJSON)[0].ingredients.toppings[3].name,
-      //top:[top0,top1,top2,top3]
-      
-    };
 
-  } else if(req.body['choice']=='beef'){
-    data={
-      dishName:JSON.parse(recipeJSON)[1].name,
-      protein:JSON.parse(recipeJSON)[1].ingredients.protein.name +', '+ JSON.parse(recipeJSON)[1].ingredients.protein.preparation,
-      salsa:JSON.parse(recipeJSON)[1].ingredients.salsa.name,
-      top0:JSON.parse(recipeJSON)[1].ingredients.toppings[0].quantity +' of '+ JSON.parse(recipeJSON)[1].ingredients.toppings[0].name,
-      top1:JSON.parse(recipeJSON)[1].ingredients.toppings[1].quantity +' of '+ JSON.parse(recipeJSON)[1].ingredients.toppings[1].name,
-      top2:JSON.parse(recipeJSON)[1].ingredients.toppings[2].quantity +' of '+ JSON.parse(recipeJSON)[1].ingredients.toppings[2].name,
-      top:[top0,top1,top2],
-      //top3:JSON.parse(recipeJSON)[1].ingredients.toppings[3].quantity +' of '+ JSON.parse(recipeJSON)[1].ingredients.toppings[3].name,
-    };
-  } else if (req.body['choice']=='fish'){
-    data={
-      dishName:JSON.parse(recipeJSON)[2].name,
-      protein:JSON.parse(recipeJSON)[2].ingredients.protein.name +', '+ JSON.parse(recipeJSON)[2].ingredients.protein.preparation,
-      salsa:JSON.parse(recipeJSON)[2].ingredients.salsa.name,
-      top0:JSON.parse(recipeJSON)[2].ingredients.toppings[0].quantity +' of '+ JSON.parse(recipeJSON)[2].ingredients.toppings[0].name,
-      top1:JSON.parse(recipeJSON)[2].ingredients.toppings[1].quantity +' of '+ JSON.parse(recipeJSON)[2].ingredients.toppings[1].name,
-      top2:JSON.parse(recipeJSON)[2].ingredients.toppings[2].quantity +' of '+ JSON.parse(recipeJSON)[2].ingredients.toppings[2].name,
-      top:[top0,top1,top2],
-      //top3:JSON.parse(recipeJSON)[2].ingredients.toppings[3].quantity +' of '+ JSON.parse(recipeJSON)[2].ingredients.toppings[3].name,
-    };
+  switch (req.body.choice) {
+    case "chicken":
+      data=JSON.parse(recipeJSON)[0];
+      break;
+    
+    case "beef":
+      data=JSON.parse(recipeJSON)[1];
+      break;
+    
+    case "fish":
+      data=JSON.parse(recipeJSON)[2];
+      break;
+
+    default:
+      break;
   }
-  //Step 3: Write your code here to make this behave like the solution website.
-  //Step 4: Add code to views/index.ejs to use the recieved recipe object.
-  res.render("index.ejs", data);
+
+
+  res.redirect('/');
 });
 
 app.listen(port, () => {
